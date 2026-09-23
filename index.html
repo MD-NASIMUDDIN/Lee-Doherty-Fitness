@@ -80,6 +80,7 @@
   .hero-form-card h3{font-size:21px;margin-bottom:6px;color:var(--black);}
   .hero-form-card p{color:var(--text-muted);font-size:14px;margin-bottom:22px;}
   .hero-form-card input,.hero-form-card select,.hero-form-card textarea{width:100%;padding:13px 14px;border:1.5px solid #E1E4EA;border-radius:8px;margin-bottom:14px;font-size:14.5px;font-family:inherit;}
+  .hero-form-card select{-webkit-appearance:none;-moz-appearance:none;appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2363666E'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.08z' clip-rule='evenodd'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;}
   .hero-form-card textarea{resize:vertical;min-height:70px;}
   .hero-form-card .btn{width:100%;}
   .form-note{font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;}
@@ -94,7 +95,7 @@
   .feature-card p{color:var(--text-muted);font-size:14.5px;}
 
   /* ABOUT */
-  .about{background:var(--cream-alt);}
+  .about{background:var(--cream-alt);border-top:1px solid rgba(20,20,20,0.06);}
   .about .container{display:flex;align-items:center;gap:60px;}
   .about > .container > div{flex:1 1 100% !important;min-width:0 !important;}
   .about-photo{width:100%;border-radius:16px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,0.18);max-width:400px;margin:0 auto;aspect-ratio:1/1;}
@@ -180,7 +181,8 @@
   }
 
   /* CHATBOT */
-  .chat-bubble{position:fixed;bottom:26px;right:26px;width:62px;height:62px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 28px rgba(36,97,232,0.5);cursor:pointer;z-index:40;font-size:26px;}
+  .chat-bubble{position:fixed;bottom:26px;right:26px;width:62px;height:62px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 28px rgba(36,97,232,0.5);cursor:pointer;z-index:40;font-size:26px;opacity:0;transform:scale(0.6);pointer-events:none;transition:opacity 0.25s ease,transform 0.25s ease;}
+  .chat-bubble.visible{opacity:1;transform:scale(1);pointer-events:auto;}
   .chat-window{position:fixed;bottom:100px;right:26px;width:320px;max-width:calc(100vw - 40px);background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,0.3);z-index:40;display:none;flex-direction:column;overflow:hidden;max-height:440px;}
   .chat-window.open{display:flex;}
   .chat-head{background:var(--black);color:#fff;padding:16px 20px;font-weight:700;}
@@ -205,13 +207,14 @@
   /* CONTENT BREAKPOINT */
   @media (max-width:900px){
     .hero,.container{padding-left:24px;padding-right:24px;}
-    .container{padding-top:70px;padding-bottom:70px;}
-    .hero{padding-top:130px;padding-bottom:70px;}
+    .container{padding-top:46px;padding-bottom:46px;}
+    .hero{padding-top:90px;padding-bottom:56px;}
     .hero .container{flex-direction:column;gap:44px;}
     .hero > .container > .hero-copy{flex:1 1 100%;}
     .hero > .container > .hero-form{flex:1 1 100%;margin-left:0;}
-    .hero-copy h1{font-size:36px;}
-    .hero-copy p{max-width:100%;}
+    .hero-copy h1{font-size:36px;margin-bottom:14px;}
+    .hero-copy p{max-width:100%;margin-bottom:14px;}
+    .hero-cta-row{margin-bottom:16px;}
     .about .container{flex-direction:column;}
     .about-photo{order:1;}
     .about-copy{order:2;}
@@ -232,7 +235,10 @@
     .gallery-grid{grid-template-columns:1fr;}
     .gallery-grid img{height:210px;}
     .transform-grid{grid-template-columns:1fr;}
-    .hero-stats{gap:22px;}
+    .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+    .hero-stat{padding-right:0;margin-right:0;border-right:none;}
+    .hero-stat b{font-size:18px;white-space:normal;}
+    .hero-stat span{font-size:10.5px;white-space:normal;}
     .hero-cta-row{flex-direction:column;}
     .hero-cta-row .btn{width:100%;}
     .about-stats{gap:14px;}
@@ -536,6 +542,21 @@
   function toggleChat(){
     document.getElementById('chatWindow').classList.toggle('open');
   }
+  (function(){
+    var bubble = document.querySelector('.chat-bubble');
+    var heroEl = document.querySelector('.hero');
+    function updateBubble(){
+      var heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : 0;
+      if(heroBottom < 40){
+        bubble.classList.add('visible');
+      } else {
+        bubble.classList.remove('visible');
+      }
+    }
+    window.addEventListener('scroll', updateBubble, { passive: true });
+    window.addEventListener('resize', updateBubble);
+    updateBubble();
+  })();
   var chatAnswers = {
     where: "Lee Doherty Fitness is based in Tallaght, Dublin. Full details are shared once you book a consultation.",
     diff: "Private training is fully 1-to-1. Semi-private lets you train with a partner or small group while still getting individual coaching.",
